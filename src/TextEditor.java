@@ -68,10 +68,11 @@ public class TextEditor extends JFrame {
         JMenuBar menuBar = new JMenuBar();
 
         JMenu fileMenu = new JMenu("File");
-        JMenuItem openMenuItem = new JMenuItem("<html>Open");
-        JMenuItem saveMenuItem = new JMenuItem("<html>Save");
-        JMenuItem saveAsMenuItem = new JMenuItem("<html>Save As");
-        JMenuItem exitMenuItem = new JMenuItem("<html>Exit");
+        JMenuItem openMenuItem = new JMenuItem("Open");
+        JMenuItem saveMenuItem = new JMenuItem("Save");
+        JMenuItem saveAsMenuItem = new JMenuItem("Save As");
+        JMenuItem deleteFileMenuItem = new JMenuItem("Delete File");
+        JMenuItem exitMenuItem = new JMenuItem("Exit");
 
 
         JMenu editMenu = new JMenu("Edit");
@@ -106,6 +107,12 @@ public class TextEditor extends JFrame {
         saveAsMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 saveAsFile();
+            }
+        });
+        
+        deleteFileMenuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                deleteFile();
             }
         });
 
@@ -214,6 +221,7 @@ public class TextEditor extends JFrame {
         fileMenu.add(openMenuItem);
         fileMenu.add(saveMenuItem);
         fileMenu.add(saveAsMenuItem);
+        fileMenu.add(deleteFileMenuItem);
         fileMenu.add(exitMenuItem);
 
         editMenu.add(undoMenuItem);
@@ -350,6 +358,32 @@ public class TextEditor extends JFrame {
             } catch (IOException e) {
                 JOptionPane.showMessageDialog(this, "Error saving file", "Error", JOptionPane.ERROR_MESSAGE);
             }
+        }
+    }
+    
+    private void deleteFile() {
+        if (currentFile != null) {
+            int choice = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete the file?",
+                    "Confirm File Deletion", JOptionPane.YES_NO_OPTION);
+            if (choice == JOptionPane.YES_OPTION) {
+                try {
+                    if (currentFile.delete()) {
+                        JOptionPane.showMessageDialog(this, "File deleted successfully.", "File Deleted",
+                                JOptionPane.INFORMATION_MESSAGE);
+                        displayTxt.setText(""); // Clear the text area
+                        currentFile = null; // Reset the current file
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Unable to delete the file.", "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this, "Error deleting the file.", "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "No file is currently opened.", "No File Open",
+                    JOptionPane.WARNING_MESSAGE);
         }
     }
 
